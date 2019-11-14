@@ -7,6 +7,7 @@ import pdb
 
 def run():
     preprocessed_data = [] 
+    labels = []
 
     for i in range(1, 10):
         filename = 'p' + str(i)
@@ -20,12 +21,14 @@ def run():
         for j in range(total_trials):
             image = get_image(images, j)
             epoch = get_epoch(info, j)
+            label = get_label(info, j)
 
             if epoch == 0 or epoch == 1 or epoch == 2:
                 preprocessed_data.append(image)
+                labels.append(label)
 
     pca = PCA(n_components=100)
-    return pca.fit_transform(preprocessed_data)
+    return pca.fit_transform(preprocessed_data), labels
 
 def get_image(images, index):
     image = images[index][0][0]
@@ -40,3 +43,23 @@ def get_image(images, index):
 
 def get_epoch(info, index):
     return info[index][4][0][0]
+
+def get_label(info, index):
+    categories = [
+            'manmade',
+            'building',
+            'buildpart',
+            'tool',
+            'furniture',
+            'animal',
+            'kitchen',
+            'vehicle',
+            'insect',
+            'vegetable',
+            'bodypart',
+            'clothing'
+            ]
+    category = info[index][0][0]
+    label = categories.index(category)
+    return label
+
