@@ -24,17 +24,16 @@ def run():
             if epoch == 0 or epoch == 1 or epoch == 2:
                 preprocessed_data.append(image)
 
-    X = preprocessed_data
     pca = PCA(n_components=100)
-    return pca.fit_transform(X)
+    return pca.fit_transform(preprocessed_data)
 
 def get_image(images, index):
     image = images[index][0][0]
 
     # truncate the image so each patient image is same length
     max_image_size = 19750
-    margin = (len(image) - max_image_size) / 2
     # center image truncation
+    margin = (len(image) - max_image_size) / 2
     truncated_image = image[math.floor(margin):][:(len(image)-math.floor(margin)-math.ceil(margin))]
 
     return truncated_image
