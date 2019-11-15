@@ -5,7 +5,7 @@ k = 5
 # returns a vector of 5 mean squared errors
 def svm5F(X, y):
 	#line to change for the other model
-    clf = svm.SVC(gamma='scale', decision_function_shape='ovo')
+	clf = svm.SVC(gamma='scale', decision_function_shape='ovo')
 	n, d = X.shape
 	z = np.zeroes(k)
 	for i in range(k):
