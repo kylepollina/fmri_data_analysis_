@@ -1,5 +1,5 @@
 import scipy.io
-import numpy
+import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
 from matplotlib import cm
@@ -8,6 +8,9 @@ MAX_X = 51
 MAX_Y = 61
 MAX_Z = 23
 
+NUM_CATEGORIES = 12
+
+"""Functions to create fMRI data visualization"""
 def get_voxel_value(mat, trial, x, y, z):
     column = mat['meta']['coordToCol'][0][0][x][y][z]
     if column != 0:
@@ -18,14 +21,17 @@ def get_voxel_value(mat, trial, x, y, z):
 def is_voxel_valid(mat, x, y, z):
     return mat['meta']['coordToCol'][0][0][x][y][z] != 0
 
-def run(data_file_name, trial, graph_file_name):
+def visualize_data(data_file_name, trial, graph_file_name):
     mat = scipy.io.loadmat(data_file_name)
 
     fig = plt.figure()
 
     #add color mapper
-    dataMin = mat['data'][trial][0][0].min()
-    dataMax = mat['data'][trial][0][0].max()
+    #dataMin = mat['data'][trial][0][0].min()
+    #dataMax = mat['data'][trial][0][0].max()
+    dataMin = -4.342 #a select range for p1 and word 'corn' to make colors of the same value the same
+    dataMax = 6.672
+
     norm = matplotlib.colors.Normalize(vmin=dataMin, vmax=dataMax, clip=True)
     mapper = cm.ScalarMappable(norm=norm, cmap=cm.bwr)
 
@@ -53,5 +59,53 @@ def run(data_file_name, trial, graph_file_name):
     fig.colorbar(sm, cax=cbar_ax)
 
     plt.subplots_adjust(hspace=0.4)
+
+    plt.savefig(graph_file_name, bbox_inches='tight')
+
+"""Functions to create the precision and recall plots"""
+def get_precision(confusion_matrix, category):
+    tp = float(confusion_matrix[category][category])
+    tp_fp = float(confusion_matrix.sum(axis=1)[category])
+    return tp / tp_fp
+
+def get_recall(confusion_matrix, category):
+    tp = float(confusion_matrix[category][category])
+    tp_fn = float(confusion_matrix.sum(axis=0)[category])
+    return tp / tp_fn
+
+def visualize_precision_recall(confusion_matrix, graph_file_name):
+    categories = [
+        'Manmade',
+        'Building',
+        'Buildpart',
+        'Tool',
+        'Furniture',
+        'Animal',
+        'Kitchen',
+        'Vehicle',
+        'Insect',
+        'Vegetable',
+        'Bodypart',
+        'Clothing'
+    ]
+
+    precision_values = [get_precision(confusion_matrix, category) for category in range(NUM_CATEGORIES)]
+    recall_values = [get_recall(confusion_matrix, category) for category in range(NUM_CATEGORIES)]
+
+    locations = np.arange(NUM_CATEGORIES)
+    width = 0.35
+
+    fig, ax = plt.subplots()
+    precision_rects = ax.bar(locations, precision_values, width, color='r')
+    recall_rects = ax.bar(locations + width, recall_values, width, color='b')
+
+    # add some text for labels, title and axes ticks
+    ax.set_ylabel('Values')
+    ax.set_ylim([0.0, 1.0])
+    ax.set_title('Precision and Recall Values by Category')
+    ax.set_xticks(locations + width / 2)
+    ax.set_xticklabels(categories)
+
+    lgd = ax.legend((precision_rects[0], recall_rects[0]), ('Precision', 'Recall'), loc='upper right')
 
     plt.savefig(graph_file_name, bbox_inches='tight')
