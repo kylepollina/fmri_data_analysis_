@@ -2,6 +2,7 @@ from scipy.io import loadmat
 from sklearn.decomposition import PCA
 import numpy as np
 import math
+import random
 
 import pdb
 
@@ -27,8 +28,23 @@ def run():
                 preprocessed_data.append(image)
                 labels.append(label)
 
-    pca = PCA(n_components=100)
-    return pca.fit_transform(preprocessed_data), labels
+    #average samples of same word, same person
+    #TODO
+
+    #shuffle lists together
+    together = list(zip(preprocessed_data, labels))
+    random.shuffle(together)
+    X, y = zip(*together)
+
+    #split data 20-80
+    n, d = X.shape
+    splitIndex = int(n / 5)
+    testX = X[0 : splitIndex]
+    testy = y[0 : splitIndex]
+    trainingX = X[splitIndex + 1 :]
+    trainingy = y[splitIndex + 1 :]
+    
+    return testX, testy, trainingX, trainingy
 
 def get_image(images, index):
     image = images[index][0][0]
