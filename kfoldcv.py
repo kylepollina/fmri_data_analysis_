@@ -1,18 +1,18 @@
 from sklearn import svm
 from sklearn.neighbors import KNeighborsClassifier
 import numpy as np
-k = 5
+numFolds = 5
 
 # returns a vector of 5 mean squared errors
 def svm5F(X, y):
 	#line to change for the other model
 	clf = svm.SVC(gamma='scale', decision_function_shape='ovo')
 	n, d = X.shape
-	z = np.zeroes(k)
-	for i in range(k):
+	z = np.zeroes(numFolds)
+	for i in range(numFolds):
 		#get indices of the current fold
-		startIndex = int(n * i / k)
-		endIndex = int(n * (i + 1) / k)
+		startIndex = int(n * i / numFolds)
+		endIndex = int(n * (i + 1) / numFolds)
 		T = set(range(startIndex, endIndex))
 		S = set(range(n)) - T #set difference
 
@@ -32,12 +32,12 @@ def svm5F(X, y):
 
 def knn5F(X, y, k):
 	n, d = X.shape
-	z = np.zeroes(k)
+	z = np.zeroes(numFolds)
 	clf = KNeighborsClassifier(n_neighbors = k)
-	for i in range(k):
+	for i in range(numFolds):
 		#get indices of the current fold
-		startIndex = int(n * i / k)
-		endIndex = int(n * (i + 1) / k)
+		startIndex = int(n * i / numFolds)
+		endIndex = int(n * (i + 1) / numFolds)
 		T = set(range(startIndex, endIndex))
 		S = set(range(n)) - T #set difference
 
