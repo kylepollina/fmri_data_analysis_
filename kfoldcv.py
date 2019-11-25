@@ -29,18 +29,18 @@ def svm5F(X, y):
         #for every incorrectly predicted point, increase the error for that point by 1
         zval[i] = [0]
         for t in T:
-            if y[t] != clf.predict(pca.transform(X[t])):
+            if y[t] != clf.predict(pca.transform(X[t][None])):
                 zval[i][0] += 1
 
         #then divide by the number of test points for a weighted error
-        zval[t] /= len(T)
+        zval[i][0] /= len(T)
 
         ztrain[i] = [0]
         for s in S:
-            if y[s] != clf.predict(pca.transform(X[t])):
+            if y[s] != clf.predict(pca.transform(X[t][None])):
                 ztrain[i][0] += 1
 
-        ztrain[i] /= len(S)
+        ztrain[i][0] /= len(S)
 
         return ztrain, zval
 
