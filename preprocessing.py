@@ -6,6 +6,9 @@ import random
 
 import pdb
 
+# TODO: Do not do PCA on whole dataset. Only do dimensionality reduction after 
+# doing cross validation i.e. only do PCA on training set. Lecture 13 slide 22
+
 def run():
     preprocessed_data = [] 
     labels = []
@@ -31,20 +34,24 @@ def run():
     #average samples of same word, same person
     #TODO
 
-    #shuffle lists together
+    X, y = suffle_data(preprocessed_data, labels)
+
+    #split data 20-80
+    n, d = X.shape
+    split_index = int(n / 5)
+    test_X = X[0 : split_index]
+    test_y = y[0 : split_index]
+    training_X = X[split_index + 1 :]
+    training_y = y[split_index + 1 :]
+    
+    return test_X, test_y, training_X, training_y
+
+def suffle_data(preprocessed_data, labels):
     together = list(zip(preprocessed_data, labels))
     random.shuffle(together)
     X, y = zip(*together)
 
-    #split data 20-80
-    n, d = X.shape
-    splitIndex = int(n / 5)
-    testX = X[0 : splitIndex]
-    testy = y[0 : splitIndex]
-    trainingX = X[splitIndex + 1 :]
-    trainingy = y[splitIndex + 1 :]
-    
-    return testX, testy, trainingX, trainingy
+    return np.array(X), np.array(y)
 
 def get_image(images, index):
     image = images[index][0][0]

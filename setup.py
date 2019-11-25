@@ -20,8 +20,3 @@ def p1():
         epoch       = info[i][4][0][0]
 
         output.append({'cond': cond, 'cond_number': cond_number, 'word': word, 'word_number': word_number, 'epoch': epoch})
-
-    from operator import itemgetter
-    newlist = sorted(output, key=itemgetter('cond')) 
-
-    print(newlist)
