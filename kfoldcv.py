@@ -9,10 +9,9 @@ def svm5F(X, y):
     #line to change for the other model
     clf = svm.SVC(gamma='scale', decision_function_shape='ovo')
     pca = PCA(n_components = 100)
-    #uncomment if pca for entire training/validation set
-    #X = pca.fit_transform(X)
     n, d = X.shape
-    z = np.zeros(num_folds)
+    ztrain = np.zeros((num_folds, 1))
+    zval = np.zeros((num_folds, 1))
     for i in range(num_folds):
         #get indices of the current fold
         start_index = int(n * i / num_folds)
@@ -23,30 +22,35 @@ def svm5F(X, y):
         #fit the model
         Xfold = X[list(S)]
         yfold = y[list(S)]
-        #uncomment if pca each fold
-        #Xfold = pca.fit_transform(Xfold)
+        Xfold = pca.fit_transform(Xfold)
 
         clf.fit(Xfold, yfold)
 
         #for every incorrectly predicted point, increase the error for that point by 1
-        z[i] = 0
+        zval[i] = [0]
         for t in T:
-            if y[t] != clf.predict(X[t]):
-                z[i] += 1
+            if y[t] != clf.predict(pca.transform(X[t])):
+                zval[i][0] += 1
 
         #then divide by the number of test points for a weighted error
-        z[t] /= len(T)
+        zval[t] /= len(T)
 
-        return z
+        ztrain[i] = [0]
+        for s in S:
+            if y[s] != clf.predict(pca.transform(X[t])):
+                ztrain[i][0] += 1
+
+        ztrain[i] /= len(S)
+
+        return ztrain, zval
 
 def knn5F(X, y, k):
     n, d = X.shape
-    z = np.zeros(num_folds)
+    ztrain = np.zeros((num_folds, 1))
+    zval = np.zeros((num_folds, 1))
     clf = KNeighborsClassifier(n_neighbors = k)
     pca = PCA(n_components = 100)
 
-    #uncomment if pca for entire training/validation set
-    #X = pca.fit_transform(X)
     for i in range(num_folds):
         #get indices of the current fold
         start_index = int(n * i / num_folds)
@@ -57,16 +61,21 @@ def knn5F(X, y, k):
         #fit the model
         Xfold = X[list(S)]
         yfold = y[list(S)]
-        #uncomment if pca each fold
-        #Xfold = pca.fit_transform(Xfold)
+        Xfold = pca.fit_transform(Xfold)
         clf.fit(Xfold, yfold)
 
         #for every incorrectly predicted point, increase the error for that point by 1
-        z[i] = 0
+        zval[i] = [0]
         for t in T:
-            if y[t] != clf.predict(X[t]):
-                z[i] += 1
+            if y[t] != clf.predict(pca.transform(X[t])):
+                zval[i][0] += 1
         #then divide by the number of test points for a weighted error
-        z[t] /= len(T)
+        zval[t] /= len(T)
 
-        return z
+        ztrain[i] = [0]
+        for s in S:
+            if y[s] != clf.predict(pca.transform(X[t])):
+                ztrain[i][0] += 1
+        ztrain[i] /= len(S)
+
+        return ztrain, zval
