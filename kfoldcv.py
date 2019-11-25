@@ -12,7 +12,7 @@ def svm5F(X, y):
     #uncomment if pca for entire training/validation set
     #X = pca.fit_transform(X)
     n, d = X.shape
-    z = np.zeroes(num_folds)
+    z = np.zeros(num_folds)
     for i in range(num_folds):
         #get indices of the current fold
         start_index = int(n * i / num_folds)
@@ -41,7 +41,7 @@ def svm5F(X, y):
 
 def knn5F(X, y, k):
     n, d = X.shape
-    z = np.zeroes(num_folds)
+    z = np.zeros(num_folds)
     clf = KNeighborsClassifier(n_neighbors = k)
     pca = PCA(n_components = 100)
 
