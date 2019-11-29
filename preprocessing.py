@@ -56,6 +56,9 @@ def suffle_data(preprocessed_data, labels):
 def get_image(images, index):
     image = images[index][0][0]
 
+    #Something to consider: maybe get voxels such that each feature in each sample
+    #corresponds to the same brain region
+
     # truncate the image so each patient image is same length
     max_image_size = 19750
     # center image truncation

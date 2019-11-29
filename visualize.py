@@ -113,8 +113,8 @@ def visualize_precision_recall(confusion_matrix, graph_file_name):
 """Function to create the KNN k value plot"""
 def visualize_KNN_k(training_error, validation_error, graph_file_name):
     x = np.arange(1, training_error.size+1)
-    plt.plot(x, training_error, label='Training Error', color='-bo')
-    plt.plot(x, validation_error, label='Validation Error', color='-ro')
+    plt.plot(x, training_error, 'bo-', label='Training Error')
+    plt.plot(x, validation_error, 'ro-', label='Validation Error')
 
     plt.xlabel('K Value')
     plt.ylabel('Error')
