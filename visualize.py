@@ -101,10 +101,10 @@ def visualize_precision_recall(confusion_matrix, graph_file_name):
 
     # add some text for labels, title and axes ticks
     ax.set_ylabel('Values')
-    ax.set_ylim([0.0, 1.0])
+    #ax.set_ylim([0.0, 1.0])
     ax.set_title('Precision and Recall Values by Category')
     ax.set_xticks(locations + width / 2)
-    ax.set_xticklabels(categories)
+    ax.set_xticklabels(categories, rotation='vertical')
 
     lgd = ax.legend((precision_rects[0], recall_rects[0]), ('Precision', 'Recall'), loc='upper right')
 
