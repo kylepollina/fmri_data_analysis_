@@ -4,10 +4,31 @@ import numpy as np
 from visualize import visualize_KNN_k, visualize_precision_recall
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.decomposition import PCA
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score
 
 def svm():
-    testX, testy, trainingX, trainingy = preprocessing.run()
-    zSVM = kfoldcv.svm5F(trainingX, trainingy)
+    test_X, test_y, training_X, training_y = preprocessing.run()
+
+    #Training
+    clf = SVC(gamma='scale', decision_function_shape='ovo')
+    pca = PCA(n_components = 100)
+
+    pca_training_X = pca.fit_transform(training_X)
+    pca_test_X = pca.transform(test_X)
+
+    clf.fit(pca_training_X, training_y)
+
+    #Testing
+    predictions = clf.predict(pca_test_X)
+    confusion_matrix = np.zeros((12, 12))
+    for prediction, label in zip(predictions, test_y):
+        confusion_matrix[prediction][label] += 1
+
+    print('SVM Accuracy: ', accuracy_score(predictions, test_y))
+
+    #Graphing
+    visualize_precision_recall(confusion_matrix, 'SVM_Precision_Recall_Plot')
 
 def knn():
     test_X, test_y, training_X, training_y = preprocessing.run()
@@ -25,15 +46,23 @@ def knn():
         train_error[k] = ztrain.mean()
     """
 
-    train_error = np.array([0.91598859, 0.91685816, 0.91830743, 0.91772856, 0.91859812, 0.91888756,
-                            0.91888756, 0.91975755, 0.91714885, 0.91714885, 0.91656914, 0.91656914,
-                            0.91714885, 0.91656914, 0.91714885, 0.91511986, 0.91511986, 0.91511986,
-                            0.91511986, 0.91309088])
-    val_error = np.array([0.91539858, 0.92818255, 0.92237532, 0.9269996, 0.93281355, 0.92008334,
-                            0.91544562, 0.91196397, 0.91539858, 0.91771744, 0.93394946, 0.93045436,
-                            0.92466057, 0.92233499, 0.92119909, 0.93392929, 0.92927813, 0.92578976,
-                            0.92930501, 0.92698615])
-    BEST_K = 8
+    #for random seed 30 when shuffling data
+    train_error = np.array([0.910490152897502, 0.912516202101554, 0.9122242496696659, 
+                            0.9104851192348832, 0.9084590700308312, 0.9145460265525702, 
+                            0.9116474758279326, 0.9104880555380775, 0.9148295895467605, 
+                            0.9130950733027119, 0.9130950733027119, 0.9130950733027119, 
+                            0.9130950733027119, 0.9130950733027119, 0.9130950733027119, 
+                            0.9119356530128568, 0.9165683005096582, 0.9165683005096582, 
+                            0.9165683005096582, 0.9165683005096582])
+
+    val_error = np.array([0.9235448312945289, 0.9282094367522516, 0.9258502486893398, 
+                            0.9269995967199891, 0.9223820405968544, 0.9154187390778329, 
+                            0.9096115069229735, 0.9211990858986423, 0.920002688533405, 
+                            0.9188600618362683, 0.9235045032934532, 0.9188869471703185, 
+                            0.9200430165344805, 0.9130864363489716, 0.9200699018685305, 
+                            0.9247143433257158, 0.9235179459604786, 0.9339696195725231, 
+                            0.9281892727517139, 0.9328001075413361])
+    BEST_K = 7
 
     #Training
     clf = KNeighborsClassifier(n_neighbors = BEST_K)
@@ -50,6 +79,11 @@ def knn():
     for prediction, label in zip(predictions, test_y):
         confusion_matrix[prediction][label] += 1
 
+    print('KNN Accuracy: ', accuracy_score(predictions, test_y))
+
     #Graphing
     visualize_KNN_k(train_error, val_error, 'KNN_K_Value_Plot')
     visualize_precision_recall(confusion_matrix, 'KNN_Precision_Recall_Plot')
+
+svm()
+#knn()

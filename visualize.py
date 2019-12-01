@@ -66,12 +66,22 @@ def visualize_data(data_file_name, trial, graph_file_name):
 def get_precision(confusion_matrix, category):
     tp = float(confusion_matrix[category][category])
     tp_fp = float(confusion_matrix.sum(axis=1)[category])
-    return tp / tp_fp
+
+    if tp_fp == 0.0:
+        print('Divide by zero error on category', category)
+        return 0.0
+    else:
+        return tp / tp_fp
 
 def get_recall(confusion_matrix, category):
     tp = float(confusion_matrix[category][category])
     tp_fn = float(confusion_matrix.sum(axis=0)[category])
-    return tp / tp_fn
+    
+    if tp_fn == 0.0:
+        print('Divide by zero error on category', category)
+        return 0.0
+    else:
+        return tp / tp_fn
 
 def visualize_precision_recall(confusion_matrix, graph_file_name):
     categories = [
@@ -106,19 +116,22 @@ def visualize_precision_recall(confusion_matrix, graph_file_name):
     ax.set_xticks(locations + width / 2)
     ax.set_xticklabels(categories, rotation='vertical')
 
-    lgd = ax.legend((precision_rects[0], recall_rects[0]), ('Precision', 'Recall'), loc='upper right')
+    lgd = ax.legend((precision_rects[0], recall_rects[0]), ('Precision', 'Recall'), loc='upper center')
 
     plt.savefig(graph_file_name, bbox_inches='tight')
 
 """Function to create the KNN k value plot"""
 def visualize_KNN_k(training_error, validation_error, graph_file_name):
     x = np.arange(1, training_error.size+1)
-    plt.plot(x, training_error, 'bo-', label='Training Error')
-    plt.plot(x, validation_error, 'ro-', label='Validation Error')
 
-    plt.xlabel('K Value')
-    plt.ylabel('Error')
-    plt.title('Error vs K Value')
-    plt.legend(loc='upper right')
+    fig, ax = plt.subplots()
+    ax.plot(x, training_error, 'bo-', label='Training Error')
+    ax.plot(x, validation_error, 'ro-', label='Validation Error')
+
+    ax.set_xticks(x)
+    ax.set_xlabel('K Value')
+    ax.set_ylabel('Error')
+    ax.set_title('Error vs K Value')
+    ax.legend(loc='upper center')
 
     plt.savefig(graph_file_name, bbox_inches='tight')
