@@ -28,7 +28,7 @@ def svm():
     print('SVM Accuracy: ', accuracy_score(predictions, test_y))
 
     #Graphing
-    visualize_precision_recall(confusion_matrix, 'SVM_Precision_Recall_Plot')
+    visualize_precision_recall(confusion_matrix, 'SVM_Precision_Recall_Plot', 'SVM Precision and Recall Values by Category')
 
 def knn():
     test_X, test_y, training_X, training_y = preprocessing.run()
@@ -83,7 +83,7 @@ def knn():
 
     #Graphing
     visualize_KNN_k(train_error, val_error, 'KNN_K_Value_Plot')
-    visualize_precision_recall(confusion_matrix, 'KNN_Precision_Recall_Plot')
+    visualize_precision_recall(confusion_matrix, 'KNN_Precision_Recall_Plot', 'KNN Precision and Recall Values by Category')
 
 svm()
-#knn()
+knn()

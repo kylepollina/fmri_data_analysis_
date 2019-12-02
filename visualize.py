@@ -83,7 +83,7 @@ def get_recall(confusion_matrix, category):
     else:
         return tp / tp_fn
 
-def visualize_precision_recall(confusion_matrix, graph_file_name):
+def visualize_precision_recall(confusion_matrix, graph_file_name, title):
     categories = [
         'Manmade',
         'Building',
@@ -112,11 +112,11 @@ def visualize_precision_recall(confusion_matrix, graph_file_name):
     # add some text for labels, title and axes ticks
     ax.set_ylabel('Values')
     #ax.set_ylim([0.0, 1.0])
-    ax.set_title('Precision and Recall Values by Category')
+    ax.set_title(title)
     ax.set_xticks(locations + width / 2)
     ax.set_xticklabels(categories, rotation='vertical')
 
-    lgd = ax.legend((precision_rects[0], recall_rects[0]), ('Precision', 'Recall'), loc='upper center')
+    lgd = ax.legend((precision_rects[0], recall_rects[0]), ('Precision', 'Recall'), loc='upper left')
 
     plt.savefig(graph_file_name, bbox_inches='tight')
 
