@@ -85,5 +85,6 @@ def knn():
     visualize_KNN_k(train_error, val_error, 'KNN_K_Value_Plot')
     visualize_precision_recall(confusion_matrix, 'KNN_Precision_Recall_Plot', 'KNN Precision and Recall Values by Category')
 
-svm()
-knn()
+if __name__ == "__main__":
+    svm()
+    knn()
