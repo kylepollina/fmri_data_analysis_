@@ -1,29 +1,25 @@
 from src.preprocessing import *
+
 #import kfoldcv
 #import numpy as np
 #from visualize import visualize_KNN_k, visualize_precision_recall
 #from sklearn.neighbors import KNeighborsClassifier
-#from sklearn.decomposition import PCA
-#from sklearn.svm import SVC
+from sklearn.decomposition import PCA
+from sklearn.svm import SVC
 #from sklearn.metrics import accuracy_score
 
+TITLE = "Predicting Brain Activity from Noun Meanings"
 
-class SVM:
-    def __init__(self):
-        pass
 
-class KNN:
-    def __init__(self):
-        pass
+def run():
+    training_samples, training_labels, test_samples, test_labels = preprocess_data(training_percentage=80)
+
+    # Decision function shape: ovo - One vs One 
+    #                          ovr - One vs Rest
+    svm_model = SVC(gamma='scale', decision_function_shape='ovo')
 
 if __name__ == "__main__":
-    training_samples, training_labels, test_samples, test_labels = preprocess_data()
-
-    # svm_model = SVM()
-    # knn_model = KNN()
-
-
-
+    run()
 
 
 #def svm():

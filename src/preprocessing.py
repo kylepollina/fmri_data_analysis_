@@ -1,18 +1,21 @@
 from scipy.io import loadmat
+from sklearn.utils import shuffle
 import numpy as np
 import math
 import random
 
-def preprocess_data():
+import pdb
+
+def preprocess_data(training_percentage):
     preprocessed_data = [] 
     labels = []
 
     for i in range(1, 10):
-        filename = 'data/p' + str(i)
+        filename = 'data/data-science-P' + str(i)
         patient = PatientData(filename)
-        num_trials = 360 
+        NUM_TRIALS = 360 
 
-        for j in range(num_trials):
+        for j in range(NUM_TRIALS):
             image = patient.get_image(j)
             label = patient.get_label(j)
 
@@ -21,28 +24,24 @@ def preprocess_data():
 
     #TODO: average samples of same word, same person
 
-    X, y = suffle_data(preprocessed_data, labels)
+    shuffled_samples, shuffled_labels = suffle_data(preprocessed_data, labels)
+    return split_data(shuffled_samples, shuffled_labels, training_percentage)
+    
 
-    trials = X.shape[0]
-    split_index = int(trials / 5)
+def suffle_data(preprocessed_data, labels):
+    mixed_samples, mixed_labels = shuffle(preprocessed_data, labels) 
+    return np.array(mixed_samples), np.array(mixed_labels)
 
-    training_samples = X[split_index + 1 :]
-    training_labels  = y[split_index + 1 :]
-    test_samples     = X[0 : split_index]
-    test_labels      = y[0 : split_index]
+def split_data(shuffled_samples, shuffled_labels, training_percentage):
+    trials = shuffled_samples.shape[0]
+    split_index = int(trials * training_percentage / 100)
+
+    training_samples = shuffled_samples[split_index + 1 :]
+    training_labels  = shuffled_labels[split_index + 1 :]
+    test_samples     = shuffled_samples[0 : split_index]
+    test_labels      = shuffled_labels[0 : split_index]
 
     return training_samples, training_labels, test_samples, test_labels
-
-# TODO redo
-def suffle_data(preprocessed_data, labels):
-    random.seed(30)
-
-    together = list(zip(preprocessed_data, labels))
-    random.shuffle(together)
-    X, y = zip(*together)
-
-    return np.array(X), np.array(y)
-
 
 class PatientData:
     def __init__(self, filename):
@@ -89,5 +88,4 @@ class PatientData:
     def get_noun_category(self, index):
         noun_category = self.info[index][0][0]
         return noun_category
-
 
