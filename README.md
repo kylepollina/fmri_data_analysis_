@@ -1,6 +1,6 @@
 # fmri_natural_language_processing
 
-Based on Predicting Human Brain Activity Associated with the Meanings of Nouns by T. Mitchell
+Based on [Predicting Human Brain Activity Associated with the Meanings of Nouns by T. Mitchell](https://www.cs.cmu.edu/afs/cs/project/theo-73/www/science2008/data.html)
 
 
 ### Introduction
