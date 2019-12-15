@@ -9,20 +9,14 @@ import pdb
 
 training_samples, training_labels, test_samples, test_labels = preprocess_data(training_percentage=80)
 
-def run():
-    svm = build_svm()
-    svm.train()
-    svm.test()
-
-    knn = build_knn()
-
 def build_svm():
     return SVM(
             training_samples, 
             training_labels, 
             test_samples, 
             test_labels, 
-            pca_n_components=100, 
+            pca_n_components=500, 
+            cv_folds=5,
             decision_function_shape='ovo')
 
 def build_knn():
@@ -31,8 +25,12 @@ def build_knn():
             training_labels,
             test_samples,
             test_labels,
-            pca_n_components=10,
-            k=1)
+            pca_n_components=500,
+            cv_folds=5,
+            k=4)
+
+# TODO implement cross validation
+# TODO make pca_n_components an optional parameter
 
 class KNN:
     def __init__(self,
@@ -41,13 +39,15 @@ class KNN:
             test_samples,
             test_labels,
             pca_n_components,
-            k):
+            k,
+            cv_folds):
         self.X_train = training_samples
         self.y_train = training_labels
         self.X_test = test_samples
         self.y_test = test_labels
         self.pca = PCA(n_components = pca_n_components)
         self.k = k
+        self.cv_folds = cv_folds
         self.learning_function = KNeighborsClassifier(n_neighbors = self.k)
         self.is_trained = False
         self.is_verbose = False
@@ -55,7 +55,7 @@ class KNN:
     def run(self):
         self.is_verbose = True
         self.train()
-        self.tune_k(1, 20)
+        scores, k_values = self.tune_k(1, 20)
 
     def print(self, string):
         if(self.is_verbose):
@@ -94,14 +94,16 @@ class KNN:
             self.change_k(k)
             self.train()
             self.test()
-            print(self.accuracy_score)
+            self.print(f"k = {k}    accuracy: {self.accuracy_score}")
             scores.append(self.accuracy_score)
 
         max_accuracy = max(scores)
         best_k = scores.index(max_accuracy) + min_k
 
-        print("Maximum accuracy: " + str(max_accuracy))
-        print("Best k: " + str(best_k))
+        self.print(f"Highest Accuracy: {max_accuracy}")
+        self.print(f"Best k: {best_k}")
+
+        return scores, list(range(min_k, max_k))
 
     def change_k(self, k):
         self.k = k
@@ -114,24 +116,33 @@ class SVM:
             test_samples, 
             test_labels, 
             pca_n_components, 
+            cv_folds,
             decision_function_shape):
         self.X_train = training_samples
         self.y_train = training_labels
         self.X_test = test_samples
         self.y_test = test_labels
-        self.learning_function = SVC(gamma='scale', decision_function_shape=decision_function_shape)
         self.pca = PCA(n_components=pca_n_components)
+        self.cv_folds = cv_folds
+        self.learning_function = SVC(gamma='scale', decision_function_shape=decision_function_shape)
         self.is_trained = False
+        self.is_verbose = False
+
+    def print(self, string):
+        if(self.is_verbose):
+            print(string)
 
     def train(self):
-        print("Training svm...")
+        self.print("Training svm...")
+
         self.X_train_pca = self.pca.fit_transform(self.X_train)
         self.X_test_pca  = self.pca.fit_transform(self.X_test)
         self.learning_function.fit(self.X_train_pca, self.y_train)
         self.is_trained = True
 
     def test(self):
-        print("Testing svm...")
+        self.print("Testing svm...")
+
         predictions = self.learning_function.predict(self.X_test_pca)
         confusion_matrix = np.zeros((12, 12))
 
@@ -148,7 +159,7 @@ class SVM:
 
 
 
-
+##############################################
 #    #Training
 #    clf = KNeighborsClassifier(n_neighbors = BEST_K)
 #    pca = PCA(n_components = 100)
