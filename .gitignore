@@ -1,5 +1,4 @@
 *.mat
 __pycache__
-*.png
 *.pyc
 /env/
