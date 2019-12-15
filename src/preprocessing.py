@@ -22,6 +22,8 @@ def preprocess_data(training_percentage):
             preprocessed_data.append(image)
             labels.append(label)
 
+    # pdb.set_trace()
+
     #TODO: average samples of same word, same person
 
     shuffled_samples, shuffled_labels = suffle_data(preprocessed_data, labels)
@@ -36,10 +38,12 @@ def split_data(shuffled_samples, shuffled_labels, training_percentage):
     trials = shuffled_samples.shape[0]
     split_index = int(trials * training_percentage / 100)
 
-    training_samples = shuffled_samples[split_index + 1 :]
-    training_labels  = shuffled_labels[split_index + 1 :]
-    test_samples     = shuffled_samples[0 : split_index]
-    test_labels      = shuffled_labels[0 : split_index]
+    #TODO: figure out if split index + 1 is correct
+
+    training_samples = shuffled_samples[0 : split_index]
+    training_labels = shuffled_labels[0 : split_index]
+    test_samples = shuffled_samples[split_index + 1 :]
+    test_labels  = shuffled_labels[split_index + 1 :]
 
     return training_samples, training_labels, test_samples, test_labels
 
@@ -71,9 +75,7 @@ class PatientData:
         image = self.get_raw_image(index)
         max_image_size = 19750
         margin = (len(image) - max_image_size) / 2
-        left_margin = math.floor(margin)
-        right_margin = math.floor(margin) - math.ceil(margin)
-        truncated_image = image[left_margin:][:(len(image) - right_margin)]
+        truncated_image = image[math.floor(margin):][:(len(image) - math.floor(margin) - math.ceil(margin))]
 
         return truncated_image
 
