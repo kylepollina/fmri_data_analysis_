@@ -1,4 +1,4 @@
-# fmri_data_analysis_
+# fmri_natural_language_processing
 
 Based on Predicting Human Brain Activity Associated with the Meanings of Nouns by T. Mitchell
 
