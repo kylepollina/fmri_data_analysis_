@@ -25,7 +25,9 @@ Looking at our bar graph, we can see that the SVM was best at predicting nouns t
 For our KNN model, we needed to tune the parameter K to find out which value of K would yield the lowest error. We looked at K’s from 1 through 20 and found that K=7 produced the lowest validation error.
 
 ![](images/image2.png)
+
 Once we knew that 7 was the best value for K, we retrained the KNN classifier with a K value of 7 on the training/validation set. Just like the SVM classifier, we measured the precision and recall of the classifier on the test set for each word category.
 
 ![](images/image3.png)
+
 For our final results, we found that our SVM model had an accuracy of 0.060185 and our KNN model had an accuracy of 0.037037. Our models were not very good at predicting the labels based on the images. 
