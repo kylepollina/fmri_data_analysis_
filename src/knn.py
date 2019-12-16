@@ -1,5 +1,6 @@
 from sklearn.decomposition import PCA
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
 
 class KNN:
     def __init__(self,
@@ -18,17 +19,23 @@ class KNN:
         self.k = k
         self.cv_folds = cv_folds
         self.learning_function = KNeighborsClassifier(n_neighbors = self.k)
-        self.is_trained = False
-        self.is_verbose = False
+        self.istrained = False
+        self.isverbose = True
 
     def run(self):
-        self.is_verbose = True
+        self.isverbose = True
         self.train()
         scores, k_values = self.tune_k(1, 20)
 
     def print(self, string):
-        if(self.is_verbose):
+        if(self.isverbose):
             print(string)
+
+    def isverbose(self):
+        return self.isverbose
+
+    def istrained(self):
+        return self.istrained
 
     def train(self):
         self.print("Training knn...")
@@ -36,7 +43,7 @@ class KNN:
         self.X_train_pca = self.pca.fit_transform(self.X_train)
         self.X_test_pca = self.pca.fit_transform(self.X_test)
         self.learning_function.fit(self.X_train_pca, self.y_train)
-        self.is_trained = True
+        self.istrained = True
 
     def test(self):
         self.print(f"Testing knn with k = {self.k}...")

@@ -18,12 +18,18 @@ class SVM:
         self.pca = PCA(n_components=pca_n_components)
         self.cv_folds = cv_folds
         self.learning_function = SVC(gamma='scale', decision_function_shape=decision_function_shape)
-        self.is_trained = False
-        self.is_verbose = False
+        self.istrained = False
+        self.isverbose = True
 
     def print(self, string):
-        if(self.is_verbose):
+        if(self.isverbose):
             print(string)
+
+    def isverbose(self):
+        return self.isverbose
+
+    def istrained(self):
+        return self.istrained
 
     def train(self):
         self.print("Training svm...")
@@ -31,7 +37,7 @@ class SVM:
         self.X_train_pca = self.pca.fit_transform(self.X_train)
         self.X_test_pca  = self.pca.fit_transform(self.X_test)
         self.learning_function.fit(self.X_train_pca, self.y_train)
-        self.is_trained = True
+        self.istrained = True
 
     def test(self):
         self.print("Testing svm...")

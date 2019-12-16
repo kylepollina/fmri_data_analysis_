@@ -1,7 +1,6 @@
 from src.preprocessing import *
 from src.svm import SVM
 from src.knn import KNN
-import pdb
 
 training_samples, training_labels, test_samples, test_labels = preprocess_data(training_percentage=80)
 
