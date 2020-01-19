@@ -1,6 +1,7 @@
 from sklearn.decomposition import PCA
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score
+from confusion_matrix import confusion_matrix
 
 class SVM:
     def __init__(self, 
@@ -43,15 +44,7 @@ class SVM:
         self.print("Testing svm...")
 
         predictions = self.learning_function.predict(self.X_test_pca)
-        confusion_matrix = np.zeros((12, 12))
-
-        for i in range(len(predictions)):
-            predicted_label = predictions[i]
-            correct_label = self.y_test[i]
-
-            confusion_matrix[predicted_label][correct_label] += 1
-
-        self.confusion_matrix = confusion_matrix
+        self.confusion_matrix = confusion_matrix(12, 12, predictions, self.y_test)
         self.predictions = predictions
         self.accuracy_score = accuracy_score(predictions, self.y_test)
 
